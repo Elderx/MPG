@@ -1,11 +1,40 @@
 Backend
---------
+------------
+Ideana, tiputat MPG:n jonne kansion ja luot kannan, ts. ei ylimääräistä virtual hostia.
+Taustalle mariadb tai postgresql tai mitä pdo / valittu orm tukee.
+
+Kuvat menee “yhteen kansioon” ja kantaan tieto galleriasta/kansiosta
+/data/original
+/data/preview    →     max 2560 x 1440, tai pysty
+/data/thumbnail  →         640 x 360 tai pysty
 
 
+Galleriassa voi olla monta kansioo, missä monta kuvaa.
+Kansiossa voi olla kansioita
 
+Upload-vaiheessa pureskellaan kaikki raskas, kuten rescale ja exif.
+raaka-Exif-data kantaan, frontendiin tarjoillaan mahdollisimman valmista matskuu.
 
 
 Frontend
---------
+------------
+
+Mahdollisesti vois käyttää html5 file api, jolloin thumbnailin saa data-urlina kuvasta lokaalisti, sen voi uploadaa samaan aikaan sit original kuvan kanssa.
+
+
+Semantic-ui ? 
+Mansory layout kansio-näkymään ?
+
+
+
+Requirements
+------------------
+
+Php 7.1
+Extensions: json, exif, 
+
+---
+composer:
+Php-Exif
 
 
