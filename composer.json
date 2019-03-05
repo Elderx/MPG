@@ -1,0 +1,15 @@
+{
+	"name": "elderx/mpg",
+	"description": "",
+	"license": "GPL-3.0",
+	"require": {
+		"php": ">=5.4",
+		"bcosca/fatfree": "^3.6"
+	},
+	"autoload": {
+		"psr-0":
+		{
+			"App": "app/"
+		}
+	}
+}

@@ -1,0 +1,7 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /mpg/
+
+RewriteCond %{REQUEST_URI} !/data/
+RewriteRule ^(.*)$ index.php?/$1 [L,QSA]
+</IfModule>
