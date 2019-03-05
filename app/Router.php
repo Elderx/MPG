@@ -19,4 +19,14 @@ class Router
         $f3->route('GET /', "\App\Controllers\IndexController->getIndex");
         $f3->route('GET /test/test', "\App\Controllers\IndexController->getIndex");
     }
+
+    /**
+     * @param \Base $f3
+     */
+    public static function Setup($f3)
+    {
+        $f3->route('GET /', "\App\Controllers\SetupController->getIndex");
+        $f3->route('POST /setup', "\App\Controllers\SetupController->postSqlSetup");
+    }
+
 }

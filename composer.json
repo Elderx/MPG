@@ -4,7 +4,9 @@
 	"license": "GPL-3.0",
 	"require": {
 		"php": ">=5.4",
-		"bcosca/fatfree": "^3.6"
+		"ext-pdo": "*",
+		"bcosca/fatfree": "^3.6",
+		"symfony/dotenv": "^4.2"
 	},
 	"autoload": {
 		"psr-0":

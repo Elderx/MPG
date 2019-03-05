@@ -9,6 +9,7 @@ namespace App\Controllers;
 
 class IndexController extends Controller
 {
+    protected $layout = "templates/layout.htm";
 
     public function getIndex($f3)
     {

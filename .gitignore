@@ -69,3 +69,4 @@ fabric.properties
 
 #temporarily files by framework
 tmp
+.env

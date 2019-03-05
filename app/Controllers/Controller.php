@@ -9,6 +9,9 @@ namespace App\Controllers;
 
 class Controller
 {
+    protected $layout = "";
+    /** @var \Session */
+    protected $session;
 
     public function __construct()
     {
@@ -16,25 +19,44 @@ class Controller
     }
 
     /**
-     * @param array  $variables
-     * @param string $layout
+     * @param array $variables
      */
-    public function view($variables = [], $layout = "templates/layout.htm")
+    public function view($variables = [])
     {
         $f3 = \Base::instance();
         foreach ($variables as $key => $value) {
             $f3->set($key, $value);
         }
-        echo \Template::instance()->render($layout);
+        echo \Template::instance()->render($this->layout);
     }
 
     /**
      * @param string $param query string parameter
+     * @param string $default
      * @return mixed
      */
-    public function getParam($param)
+    public function getParam($param, $default = "")
     {
-        return \Base::instance()->get("GET.".$param);
+        return \Base::instance()->get("GET.".$param) ?: $default;
+    }
+
+    /**
+     * @param string $param parameter
+     * @param string $default
+     * @return mixed
+     */
+    public function postParam($param, $default = "")
+    {
+        return \Base::instance()->get("POST.".$param) ?: $default;
+    }
+
+    /**
+     * @param string $to
+     */
+    public function redirect($to)
+    {
+        $f3 = \Base::instance();
+        $f3->reroute($to, false);
     }
 
 }

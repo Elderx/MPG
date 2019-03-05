@@ -8,20 +8,26 @@
 
 namespace App;
 
+use Symfony\Component\Dotenv\Dotenv;
+
 class Bootstrapper
 {
 
-    public function __construct()
+    /**
+     * @param \Base $f3
+     */
+    public function __construct($f3)
     {
-        echo Config::instance()->test;
+        if (!file_exists(".env")) {
+            Router::Setup($f3);
+            $f3->run();
+            return;
+        }
 
-        $f3 = \Base::instance();
-        $f3->set('DEBUG', 1);
-        $f3->set("UI", "view/");
+        $dotenv = new Dotenv();
+        $dotenv->load(APP_ROOT.'/.env');
 
         Router::Routes($f3);
-
         $f3->run();
-
     }
 }
