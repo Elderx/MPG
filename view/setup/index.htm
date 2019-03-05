@@ -6,28 +6,28 @@
 
     <label>
         Host
-        <input type="text" placeholder="127.0.0.1" name="DB_HOST"/>
+        <input type="text" placeholder="127.0.0.1" name="DB_HOST" value="{{ @sqlValues['DB_HOST'] }}"/>
     </label>
     <br/>
     <label>
         Port
-        <input type="text" placeholder="3306" name="DB_PORT"/>
+        <input type="text" placeholder="3306" name="DB_PORT" value="{{ @sqlValues['DB_PORT'] }}"/>
     </label>
     <br/>
     <label>
         User
-        <input type="text" value="" placeholder="Username" name="DB_USER" required/>
+        <input type="text" placeholder="Username" name="DB_USER" value="{{ @sqlValues['DB_USER'] }}" required/>
     </label>
     <br/>
     <label>
         Password
-        <input type="password" value="" placeholder="Password" name="DB_PASS"/>
+        <input type="password" placeholder="Password" name="DB_PASS" value="{{ @sqlValues['DB_PASS'] }}"/>
     </label>
     <br/>
 
     <label>
         Database
-        <input type="text" value="" placeholder="database" name="DB_DATABASE" required/>
+        <input type="text" placeholder="database" name="DB_DATABASE" value="{{ @sqlValues['DB_DATABASE'] }}" required/>
     </label>
     <br/><br/>
     <button type="submit" class="ui success basic button">Submit</button>

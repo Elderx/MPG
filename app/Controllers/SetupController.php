@@ -26,10 +26,16 @@ class SetupController extends Controller
     public function getIndex($f3)
     {
         $content = "setup/index.htm";
-        $token = $this->session->csrf();
-        $f3->copy('CSRF','SESSION.csrf');
+        $token = $this->getToken();
+        $sqlValues = $f3->get("SESSION.sqlValues") ?: [
+            "DB_HOST" => "127.0.0.1",
+            "DB_PORT" => 3306,
+            "DB_USER" => "",
+            "DB_PASS" => "",
+            "DB_DATABASE" => "",
+        ];
 
-        $this->view(compact("content", "token"));
+        $this->view(compact("content", "token", "sqlValues"));
     }
 
     public function postSqlSetup($f3)
@@ -41,6 +47,13 @@ class SetupController extends Controller
         $pass = $this->postParam("DB_PASS", null);
         $database = $this->postParam("DB_DATABASE", "f3");
 
+        $f3->set("SESSION.sqlValues", [
+            "DB_HOST" => $host,
+            "DB_PORT" => $port,
+            "DB_USER" => $user,
+            "DB_PASS" => $pass,
+            "DB_DATABASE" => $database,
+        ]);
 
         $out = "";
         $out .= "DB_HOST=".$host."\n";
@@ -56,9 +69,8 @@ class SetupController extends Controller
             $this->redirect("/");
         } catch (PDOException $ex) {
 
-            $content = "setup/sqlerror.htm";
-            $message = $ex->getMessage();
-            $this->view(compact("content", "message"));
+            $this->flash($ex->getMessage(), "error");
+            $this->redirect("/");
         }
     }
 

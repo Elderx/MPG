@@ -88,4 +88,13 @@ class Controller
         \Base::instance()->reroute($to, false);
     }
 
+    /** Generate a new csrf token */
+    public function getToken()
+    {
+        $token = $this->session->csrf();
+        \Base::instance()->copy('CSRF', 'SESSION.csrf');
+
+        return $token;
+    }
+
 }
