@@ -26,12 +26,15 @@ class SetupController extends Controller
     public function getIndex($f3)
     {
         $content = "setup/index.htm";
+        $token = $this->session->csrf();
+        $f3->copy('CSRF','SESSION.csrf');
 
-        $this->view(compact("content"));
+        $this->view(compact("content", "token"));
     }
 
     public function postSqlSetup($f3)
     {
+
         $host = $this->postParam("DB_HOST", "127.0.0.1");
         $port = $this->postParam("DB_PORT", 3306);
         $user = $this->postParam("DB_USER", "root");

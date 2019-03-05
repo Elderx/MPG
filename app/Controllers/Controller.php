@@ -9,15 +9,31 @@ namespace App\Controllers;
 
 class Controller
 {
-    protected $layout = "";
+    /** @var string $layout */
+    protected $layout = "templates/layout.htm";
 
     /** @var \Session */
     protected $session;
 
+
     public function __construct()
     {
+        /** @var \Base $f3 */
+        $f3 = \Base::instance();
+
         $sessionCache = new \Cache('folder=tmp/sessions/'); // Session cache
         $this->session = new \Session(null, 'CSRF', $sessionCache);
+
+        $f3->set("base_url", $f3->SCHEME.'://'.$f3->HOST.':'.$f3->PORT.$f3->BASE.'/');
+
+        // automatic csrf validation
+        if ($f3->VERB == 'POST') {
+            $token = $f3->get('POST.token');
+            $csrf = $f3->get('SESSION.csrf');
+            if (empty($token) || empty($csrf) || $token !== $csrf) {
+                $this->redirect("error/csrf");
+            }
+        }
     }
 
     public function flash($message, $type = "info")
@@ -31,18 +47,17 @@ class Controller
     public function view($variables = [])
     {
         $f3 = \Base::instance();
-
+        // add variables
         foreach ($variables as $key => $value) {
             $f3->set($key, $value);
         }
+        // add flash support
         if ($f3->get("SESSION.flash")) {
             $f3->set("flashMessage", $f3->get("SESSION.flash"));
             $f3->set("SESSION.flash", false);
         }
 
         echo \Template::instance()->render($this->layout);
-
-
     }
 
     /**
@@ -70,8 +85,7 @@ class Controller
      */
     public function redirect($to)
     {
-        $f3 = \Base::instance();
-        $f3->reroute($to, false);
+        \Base::instance()->reroute($to, false);
     }
 
 }

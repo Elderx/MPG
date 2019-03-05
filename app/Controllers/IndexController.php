@@ -11,6 +11,10 @@ class IndexController extends Controller
 {
     protected $layout = "templates/layout.htm";
 
+    /**
+     * Landing page
+     * @param \Base $f3
+     */
     public function getIndex($f3)
     {
         // echo "params:" . getParam("arg");
@@ -24,7 +28,10 @@ class IndexController extends Controller
         $this->view(compact("content", "arrays"));
     }
 
-
+    /**
+     * Testing flash message
+     * @param \Base $f3
+     */
     public function getTest($f3)
     {
         $this->flash("Testing flash");
