@@ -10,12 +10,19 @@ namespace App\Controllers;
 class Controller
 {
     protected $layout = "";
+
     /** @var \Session */
     protected $session;
 
     public function __construct()
     {
+        $sessionCache = new \Cache('folder=tmp/sessions/'); // Session cache
+        $this->session = new \Session(null, 'CSRF', $sessionCache);
+    }
 
+    public function flash($message, $type = "info")
+    {
+        \Base::instance()->set("SESSION.flash", [$type, $message]);
     }
 
     /**
@@ -24,10 +31,18 @@ class Controller
     public function view($variables = [])
     {
         $f3 = \Base::instance();
+
         foreach ($variables as $key => $value) {
             $f3->set($key, $value);
         }
+        if ($f3->get("SESSION.flash")) {
+            $f3->set("flashMessage", $f3->get("SESSION.flash"));
+            $f3->set("SESSION.flash", false);
+        }
+
         echo \Template::instance()->render($this->layout);
+
+
     }
 
     /**

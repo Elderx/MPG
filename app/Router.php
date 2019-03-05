@@ -17,7 +17,7 @@ class Router
     public static function Routes($f3)
     {
         $f3->route('GET /', "\App\Controllers\IndexController->getIndex");
-        $f3->route('GET /test/test', "\App\Controllers\IndexController->getIndex");
+        $f3->route('GET /test', "\App\Controllers\IndexController->getTest");
     }
 
     /**

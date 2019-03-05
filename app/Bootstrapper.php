@@ -18,6 +18,8 @@ class Bootstrapper
      */
     public function __construct($f3)
     {
+
+
         if (!file_exists(".env")) {
             Router::Setup($f3);
             $f3->run();

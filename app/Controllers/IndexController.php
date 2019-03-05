@@ -24,4 +24,12 @@ class IndexController extends Controller
         $this->view(compact("content", "arrays"));
     }
 
+
+    public function getTest($f3)
+    {
+        $this->flash("Testing flash");
+        $this->redirect("/");
+
+    }
+
 }

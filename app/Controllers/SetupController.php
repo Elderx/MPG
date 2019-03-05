@@ -20,7 +20,7 @@ class SetupController extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->session = new \Session();
+
     }
 
     public function getIndex($f3)

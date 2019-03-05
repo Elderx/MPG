@@ -16,6 +16,16 @@
 <body>
 
 <include href="menu.htm"/>
+
+<check if="{{ @flashMessage }}">
+    <div class="ui {{ @flashMessage[0] }} message">
+        <i class="close icon"></i>
+        <div class="header">
+            {{ @flashMessage[1] }}
+        </div>
+    </div>
+</check>
+
 <include href="{{ @content }}"/>
 
 </body>
