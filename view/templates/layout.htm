@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="<?php echo $ENCODING; ?>" />
-		<title>MPG - My PHP Gallery</title>
-		<base href="<?php echo $SCHEME.'://'.$HOST.':'.$PORT.$BASE.'/'; ?>" />
-		<link rel="stylesheet" href="data/css/base.css" type="text/css" />
-	</head>
-	<body>
-		<include href="header.htm"/>
-		<include href="{{ @content }}"/>
-	</body>
+<head>
+    <base href="<?php echo $SCHEME.'://'.$HOST.':'.$PORT.$BASE.'/'; ?>"/>
+    <meta charset="<?php echo $ENCODING; ?>"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <title>MPG - My PHP Gallery</title>
+
+    <link rel="stylesheet" type="text/css" href="www/components/reset.css">
+    <link rel="stylesheet" href="www/semantic.min.css" type="text/css"/>
+    <script src="www/js/vendor/jquery-3.3.1.min.js"></script>
+    <script src="www/semantic.min.js"></script>
+</head>
+<body>
+
+<include href="menu.htm"/>
+<include href="{{ @content }}"/>
+
+</body>
 </html>

@@ -1,7 +1,9 @@
 <IfModule mod_rewrite.c>
 RewriteEngine On
+
+# change this to reflect your directory at apache
 RewriteBase /mpg/
 
-RewriteCond %{REQUEST_URI} !/data/
+RewriteCond %{REQUEST_URI} !/www/
 RewriteRule ^(.*)$ index.php?/$1 [L,QSA]
 </IfModule>
