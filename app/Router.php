@@ -19,15 +19,24 @@ class Router
      */
     public static function Routes($f3)
     {
+
+
         $f3->route('GET /', "\App\Controllers\IndexController->getIndex");
         $f3->route('GET /test', "\App\Controllers\IndexController->getTest");
+
+        // admin
         $f3->route('GET /admin', "\App\Controllers\AdminController->getDashboard");
         $f3->route('GET /admin/test', "\App\Controllers\AdminController->getDashboard");
-        $f3->route('GET /error/csrf', "\App\Controllers\ErrorController->getCsrf");
+
+        // auth routes
         $f3->route('GET /auth/login', "\App\Controllers\AuthController->getLogin");
         $f3->route('POST /auth/login', "\App\Controllers\AuthController->postLogin");
         $f3->route('GET /auth/logout', "\App\Controllers\AuthController->getLogout");
 
+        // errors
+        $f3->route('GET /error/csrf', "\App\Controllers\ErrorController->getCsrf");
+
+        // protect admin
         Middleware::instance()->before('GET /admin*', function (\Base $f3, $params, $alias) {
             if (!$f3->exists("SESSION.user") || $f3->get("SESSION.user") == false) {
                 $f3->set("SESSION.redirect", $params[0]);

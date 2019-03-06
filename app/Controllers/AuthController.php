@@ -29,23 +29,33 @@ class AuthController extends Controller
      */
     public function postLogin($f3)
     {
+        $error = false;
+
         $user = new DbUser();
         $user->load(["email = ?", $this->postParam("email", null)]);
+
         if ($user->dry()) {
-            $f3->set("SESSION.user", false);
-            $this->flash("your credentials doens\'t match", "error");
-            $this->redirect("/auth/login");
+            $error = true;
         }
 
         if (!password_verify($this->postParam("password"), $user->password)) {
+            $error = true;
+        }
+
+        if ($error) {
             $f3->set("SESSION.user", false);
             $this->flash("your credentials doens\'t match", "error");
             $this->redirect("/auth/login");
-        } else {
-            $f3->set("SESSION.user", $this->postParam("email"));
-            //$f3->set("SESSION.user", clone $user);
-            $this->redirect($f3->get("SESSION.redirect") ?: "/");
+
+            return;
         }
+
+        // set session user
+        $userArray = $user->cast(null, 2);
+        unset($userArray['password']);
+        $f3->set("SESSION.user", (object) $userArray);
+
+        $this->redirect($f3->get("SESSION.redirect") ?: "/");
     }
 
     /**

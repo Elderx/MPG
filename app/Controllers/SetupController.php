@@ -15,6 +15,7 @@ class SetupController extends Controller
 {
     protected $layout = "templates/setup.htm";
 
+    /** @param \Base $f3 */
     public function getSqlSetup($f3)
     {
         $token = $this->getToken();
@@ -29,9 +30,7 @@ class SetupController extends Controller
         $this->view("setup/sql.htm", compact("token", "sqlValues"));
     }
 
-    /**
-     * @param \Base $f3
-     */
+    /** @param \Base $f3 */
     public function postSqlSetup($f3)
     {
 
@@ -65,7 +64,7 @@ class SetupController extends Controller
 
             // clear session values
             $f3->set("SESSION.sqlValues", []);
-            $f3->set("SESSION.setup", "true");
+            $f3->set("SESSION.setup", true);
 
 
             // redirect to step 2
@@ -79,6 +78,7 @@ class SetupController extends Controller
         }
     }
 
+    /** @param \Base $f3 */
     public function getUserSetup($f3)
     {
         $token = $this->getToken();
@@ -91,6 +91,7 @@ class SetupController extends Controller
         $this->view("setup/user.htm", compact("token"));
     }
 
+    /** @param \Base $f3 */
     public function postUserSetup($f3)
     {
         $name = $this->postParam("name", null);
@@ -111,7 +112,7 @@ class SetupController extends Controller
         $user->password = \password_hash($pass1, PASSWORD_BCRYPT);
         $user->save();
 
-        $f3->set("SESSION.setup", "false");
+        $f3->set("SESSION.setup", false);
 
         $this->redirect("/");
     }

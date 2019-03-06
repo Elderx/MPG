@@ -7,8 +7,6 @@
 
 namespace App\Controllers;
 
-use Middleware;
-
 class AdminController extends Controller
 {
     protected $layout = "templates/layout.htm";
@@ -25,17 +23,6 @@ class AdminController extends Controller
     public function getDashboard($f3)
     {
         $this->view("admin/dashboard.htm");
-    }
-
-    /**
-     * Testing flash message
-     * @param \Base $f3
-     */
-    public function getTest($f3)
-    {
-        $this->flash("Testing flash");
-        $this->redirect("/");
-
     }
 
 }

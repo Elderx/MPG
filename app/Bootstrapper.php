@@ -25,18 +25,20 @@ class Bootstrapper
         $sessionCache = new \Cache('folder=tmp/sessions/');
         $f3->set("session", new \Session(null, 'CSRF', $sessionCache));
 
-        if (!file_exists(".env")) {
-            Router::Setup($f3);
-            $f3->run();
+        // set authenticated user for templates
+        $f3->set("authUser", $f3->get("SESSION.user"));
 
-            return;
+        // check if settings exists
+        if (file_exists(".env")) {
+            $dotenv = new Dotenv();
+            $dotenv->load(APP_ROOT.'/.env');
+            $this->connectDb($f3);
+        } else {
+            // enter setup mode
+            $f3->set("SESSION.setup", true);
         }
 
-        $dotenv = new Dotenv();
-        $dotenv->load(APP_ROOT.'/.env');
-        $this->connectDb($f3);
-
-        if ($f3->get("SESSION.setup") === "true") {
+        if ($f3->get("SESSION.setup") === true) {
             Router::Setup($f3);
         } else {
             Router::Routes($f3);

@@ -11,6 +11,12 @@ namespace App\Models;
 
 use DB\SQL\Schema;
 
+/**
+ * @property string name
+ * @property string password
+ * @property string email
+ * @property int    power
+ */
 class DbUser extends \DB\Cortex
 {
     protected $db = 'DB';
