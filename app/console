@@ -1,0 +1,29 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * Date: 6.3.2019
+ * Time: 16.01
+ */
+
+require(__DIR__."/../vendor/autoload.php");
+
+use App\Cli\CreateUser;
+use App\Cli\WelcomeCommand;
+use App\Cli\WipeDatabase;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
+$cli = new Application("console", "0.0.1");
+$output = new ConsoleOutput();
+
+$cli->add(new WelcomeCommand());
+$cli->add(new WipeDatabase());
+$cli->add(new CreateUser());
+
+try {
+    $cli->run();
+} catch (Exception $e) {
+
+}
+
+

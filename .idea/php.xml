@@ -8,6 +8,9 @@
       <path value="$PROJECT_DIR$/vendor/ikkez/f3-schema-builder" />
       <path value="$PROJECT_DIR$/vendor/ikkez/f3-cortex" />
       <path value="$PROJECT_DIR$/vendor/ikkez/f3-middleware" />
+      <path value="$PROJECT_DIR$/vendor/symfony/contracts" />
+      <path value="$PROJECT_DIR$/vendor/symfony/console" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-mbstring" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="5.4.0" />
