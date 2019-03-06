@@ -23,7 +23,7 @@ class IndexController extends Controller
             "string2",
         ];
 
-        $this->view("welcome.htm", compact("content", "arrays"));
+        $this->view("welcome.htm", compact("arrays"));
     }
 
     /**

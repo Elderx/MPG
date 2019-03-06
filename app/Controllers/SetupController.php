@@ -59,13 +59,12 @@ class SetupController extends Controller
             $db = new SQL('mysql:host='.$host.';port='.$port.';dbname='.$database.';', $user, $pass);
             $db->version();
 
-            // create .env file which disables setup procedure
+            // create .env
             file_put_contents(APP_ROOT."/.env", $out);
 
-            // clear session values
+            // reset session values
             $f3->set("SESSION.sqlValues", []);
             $f3->set("SESSION.setup", true);
-
 
             // redirect to step 2
             $this->redirect("/step2");
@@ -82,7 +81,12 @@ class SetupController extends Controller
     public function getUserSetup($f3)
     {
         $token = $this->getToken();
-        DbUser::setup();
+        try {
+            DbUser::setup();
+        } catch (\Exception $exception) {
+            $this->flash($exception->getMessage(), "error");
+        }
+
         $userValues = $f3->get("SESSION.userValues") ?: [
             "name" => null,
             "email" => null,
@@ -98,6 +102,21 @@ class SetupController extends Controller
         $email = $this->postParam("email", null);
         $pass1 = $this->postParam("password1", null);
         $pass2 = $this->postParam("password2", null);
+
+        if ($name !== null) {
+            $this->flash("You must provide a name", "error");
+            $this->redirect("/step2");
+
+            return;
+        }
+
+        if ($email !== null) {
+            $this->flash("You must provide a valid email", "error");
+            $this->redirect("/step2");
+
+            return;
+        }
+
         if (($pass1 !== null && $pass2 !== null) && $pass1 !== $pass2) {
             $f3->set("SESSION.userValues", ["name" => $name, "email" => $email]);
             $this->flash("Passwords not match", "error");
@@ -106,16 +125,18 @@ class SetupController extends Controller
             return;
         }
 
+        // create user
         $user = new DbUser();
         $user->name = $name;
         $user->email = $email;
         $user->password = \password_hash($pass1, PASSWORD_BCRYPT);
+        $user->power = 2;
         $user->save();
 
+        // end setup
         $f3->set("SESSION.setup", false);
 
         $this->redirect("/");
     }
-
 
 }
