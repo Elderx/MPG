@@ -1,0 +1,29 @@
+<h1>Welcome to My Php Gallery Setup</h1>
+
+<form action="step2" method="post" class="ui form">
+    <input type="hidden" name="token" value="{{ @token}}"/>
+    <h3>User setup</h3>
+
+    <label>
+        Name
+        <input type="text" placeholder="Admin Istator" name="name" required/>
+    </label>
+    <br/>
+    <label>
+        E-mail
+        <input type="email" placeholder="admin.istator@localhost.com" name="email" required/>
+    </label>
+    <br/>
+    <label>
+        Password
+        <input type="password" placeholder="Password" name="password1" required/>
+    </label>
+    <br/>
+    <label>
+        Confirm Password
+        <input type="password" placeholder="Confirm Password" name="password2" required/>
+    </label>
+    <br/><br/>
+    <button type="submit" class="ui success basic button">Submit</button>
+
+</form>

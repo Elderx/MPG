@@ -7,6 +7,7 @@
 
 namespace App\Controllers;
 
+use App\Models\DbUser;
 use DB\SQL;
 use PDOException;
 
@@ -14,18 +15,8 @@ class SetupController extends Controller
 {
     protected $layout = "templates/setup.htm";
 
-    /**
-     *
-     */
-    public function __construct()
+    public function getSqlSetup($f3)
     {
-        parent::__construct();
-
-    }
-
-    public function getIndex($f3)
-    {
-        $content = "setup/index.htm";
         $token = $this->getToken();
         $sqlValues = $f3->get("SESSION.sqlValues") ?: [
             "DB_HOST" => "127.0.0.1",
@@ -35,9 +26,12 @@ class SetupController extends Controller
             "DB_DATABASE" => "",
         ];
 
-        $this->view(compact("content", "token", "sqlValues"));
+        $this->view("setup/sql.htm", compact("token", "sqlValues"));
     }
 
+    /**
+     * @param \Base $f3
+     */
     public function postSqlSetup($f3)
     {
 
@@ -51,7 +45,7 @@ class SetupController extends Controller
             "DB_HOST" => $host,
             "DB_PORT" => $port,
             "DB_USER" => $user,
-            "DB_PASS" => $pass,
+            "DB_PASS" => "",
             "DB_DATABASE" => $database,
         ]);
 
@@ -65,13 +59,62 @@ class SetupController extends Controller
         try {
             $db = new SQL('mysql:host='.$host.';port='.$port.';dbname='.$database.';', $user, $pass);
             $db->version();
+
+            // create .env file which disables setup procedure
             file_put_contents(APP_ROOT."/.env", $out);
-            $this->redirect("/");
+
+            // clear session values
+            $f3->set("SESSION.sqlValues", []);
+            $f3->set("SESSION.setup", "true");
+
+
+            // redirect to step 2
+            $this->redirect("/step2");
         } catch (PDOException $ex) {
 
             $this->flash($ex->getMessage(), "error");
+
+            // since .env file is not yet available, this will return to sql setup
             $this->redirect("/");
         }
     }
+
+    public function getUserSetup($f3)
+    {
+        $token = $this->getToken();
+        DbUser::setup();
+        $userValues = $f3->get("SESSION.userValues") ?: [
+            "name" => null,
+            "email" => null,
+        ];
+
+        $this->view("setup/user.htm", compact("token"));
+    }
+
+    public function postUserSetup($f3)
+    {
+        $name = $this->postParam("name", null);
+        $email = $this->postParam("email", null);
+        $pass1 = $this->postParam("password1", null);
+        $pass2 = $this->postParam("password2", null);
+        if (($pass1 !== null && $pass2 !== null) && $pass1 !== $pass2) {
+            $f3->set("SESSION.userValues", ["name" => $name, "email" => $email]);
+            $this->flash("Passwords not match", "error");
+            $this->redirect("/step2");
+
+            return;
+        }
+
+        $user = new DbUser();
+        $user->name = $name;
+        $user->email = $email;
+        $user->password = \password_hash($pass1, PASSWORD_BCRYPT);
+        $user->save();
+
+        $f3->set("SESSION.setup", "false");
+
+        $this->redirect("/");
+    }
+
 
 }

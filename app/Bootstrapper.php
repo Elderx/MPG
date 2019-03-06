@@ -9,6 +9,8 @@
 namespace App;
 
 use App\Controllers\ErrorController;
+use DB\SQL;
+use Middleware;
 use Symfony\Component\Dotenv\Dotenv;
 
 class Bootstrapper
@@ -19,25 +21,9 @@ class Bootstrapper
      */
     public function __construct($f3)
     {
-
-        $f3->set('ONERROR',
-            function ($f3) {
-                /**
-                 * @var \Base $f3
-                 */
-                // recursively clear existing output buffers:
-                while (ob_get_level()) {
-                    ob_end_clean();
-                }
-                $error =  new ErrorController($f3);
-                if ($f3->get("ERROR.code") == 404) {
-                   $error->get404();
-                    return;
-                } else {
-                    $error->getGeneric();
-                    return;
-                }
-            });
+        // Session cache
+        $sessionCache = new \Cache('folder=tmp/sessions/');
+        $f3->set("session", new \Session(null, 'CSRF', $sessionCache));
 
         if (!file_exists(".env")) {
             Router::Setup($f3);
@@ -48,10 +34,37 @@ class Bootstrapper
 
         $dotenv = new Dotenv();
         $dotenv->load(APP_ROOT.'/.env');
+        $this->connectDb($f3);
 
-        Router::Routes($f3);
+        if ($f3->get("SESSION.setup") === "true") {
+            Router::Setup($f3);
+        } else {
+            Router::Routes($f3);
+        }
 
-
+        Middleware::instance()->run();
         $f3->run();
+
     }
+
+    /**
+     * @param \Base $f3
+     */
+    private function connectDb($f3)
+    {
+
+        try {
+            $db = new SQL('mysql:host='.getenv("DB_HOST").';port='.getenv("DB_PORT").';dbname='.getenv("DB_DATABASE").';',
+                getenv("DB_USER"), getenv("DB_PASS"));
+
+            $f3->set("DB", $db);
+
+        } catch (\PDOException $ex) {
+            $error = new ErrorController();
+
+            $error->getGeneric($f3, $ex);
+            exit(1);
+        }
+    }
+
 }

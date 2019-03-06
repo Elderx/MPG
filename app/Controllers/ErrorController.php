@@ -14,31 +14,34 @@ class ErrorController extends Controller
     /**
      * @param \Base $f3
      */
-    public function getCsrf()
+    public function getCsrf($f3)
     {
-        $content = "errors/csrf.htm";
-        $this->view(compact("content"));
+        $this->view("errors/csrf.htm");
     }
 
     /**
      * 404
      * @param \Base $f3
      */
-    public function get404()
+    public function get404($f3)
     {
-        $content = "errors/e404.htm";
-        $this->view(compact("content", "error"));
+        $this->view("errors/e404.htm");
     }
 
     /**
      * 404
-     * @param \Base $f3
+     * @param \Base           $f3
+     * @param bool|\Exception $exception
      */
-    public function getGeneric()
+    public function getGeneric($f3, $exception = false)
     {
-        $content = "errors/generic.htm";
-        $errorMessage = \Base::instance()->get('ERROR.text');
-        $this->view(compact("content", "errorMessage"));
+        if ($exception) {
+            $errorMessage = $exception->getMessage();
+        } else {
+            $errorMessage = \Base::instance()->get('ERROR.text');
+        }
+
+        $this->view("errors/generic.htm", compact("errorMessage"));
     }
 
 }

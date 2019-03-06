@@ -7,7 +7,7 @@
 
 namespace App\Controllers;
 
-class Controller
+abstract class Controller
 {
     /** @var string $layout */
     protected $layout = "templates/layout.htm";
@@ -21,9 +21,7 @@ class Controller
         /** @var \Base $f3 */
         $f3 = \Base::instance();
 
-        $sessionCache = new \Cache('folder=tmp/sessions/'); // Session cache
-        $this->session = new \Session(null, 'CSRF', $sessionCache);
-
+        // set base url for html base tag
         $f3->set("base_url", $f3->SCHEME.'://'.$f3->HOST.':'.$f3->PORT.$f3->BASE.'/');
 
         // automatic csrf validation
@@ -42,12 +40,16 @@ class Controller
     }
 
     /**
+     * render view
+     * @param string $resource
      * @param array $variables
      */
-    public function view($variables = [])
+    public function view($resource, $variables = [])
     {
         $f3 = \Base::instance();
         // add variables
+        $f3->set("content", $resource);
+
         foreach ($variables as $key => $value) {
             $f3->set($key, $value);
         }
@@ -91,7 +93,7 @@ class Controller
     /** Generate a new csrf token */
     public function getToken()
     {
-        $token = $this->session->csrf();
+        $token =\Base::instance()->get("session")->csrf();
         \Base::instance()->copy('CSRF', 'SESSION.csrf');
 
         return $token;

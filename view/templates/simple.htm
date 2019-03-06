@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="{{ @base_url }}"/>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <title>MPG - My PHP Gallery</title>
+
+    <link rel="stylesheet" type="text/css" href="www/components/reset.css">
+    <link rel="stylesheet" href="www/semantic.min.css" type="text/css"/>
+    <script src="www/js/vendor/jquery-3.3.1.min.js"></script>
+    <script src="www/semantic.min.js"></script>
+    <style type="text/css">
+        body {
+            background: #2e3032;
+        }
+        .col {
+            max-width: 450px;
+        }
+        body > .grid {
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<check if="{{ @flashMessage }}">
+    <div class="ui {{ @flashMessage[0] }} message">
+        <i class="close icon"></i>
+        <div class="header">
+            {{ @flashMessage[1] }}
+        </div>
+    </div>
+</check>
+
+<include href="{{ @content }}"/>
+
+</body>
+</html>

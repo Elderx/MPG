@@ -7,23 +7,24 @@
 
 namespace App\Controllers;
 
-class IndexController extends Controller
+use Middleware;
+
+class AdminController extends Controller
 {
     protected $layout = "templates/layout.htm";
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
     /**
      * Landing page
      * @param \Base $f3
      */
-    public function getIndex($f3)
+    public function getDashboard($f3)
     {
-
-        $arrays = [
-            "string1",
-            "string2",
-        ];
-
-        $this->view("welcome.htm", compact("content", "arrays"));
+        $this->view("admin/dashboard.htm");
     }
 
     /**
