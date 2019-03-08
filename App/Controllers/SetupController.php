@@ -103,14 +103,14 @@ class SetupController extends Controller
         $pass1 = $this->postParam("password1", null);
         $pass2 = $this->postParam("password2", null);
 
-        if ($name !== null) {
+        if ($name === null) {
             $this->flash("You must provide a name", "error");
             $this->redirect("/step2");
 
             return;
         }
 
-        if ($email !== null) {
+        if ($email === null) {
             $this->flash("You must provide a valid email", "error");
             $this->redirect("/step2");
 
