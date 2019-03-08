@@ -117,7 +117,7 @@ class SetupController extends Controller
             return;
         }
 
-        if (($pass1 !== null && $pass2 !== null) && $pass1 !== $pass2) {
+        if (($pass1 === null && $pass2 === null) && $pass1 !== $pass2) {
             $f3->set("SESSION.userValues", ["name" => $name, "email" => $email]);
             $this->flash("Passwords not match", "error");
             $this->redirect("/step2");
