@@ -9,12 +9,13 @@
 		"symfony/dotenv": "^4.2",
 		"ikkez/f3-cortex": "^1.6",
 		"ikkez/f3-middleware": "^1.1",
-		"symfony/console": "^4.2"
+		"symfony/console": "^4.2",
+		"symfony/dotenv": "dev-master"
 	},
 	"autoload": {
 		"psr-0":
 		{
-			"App": "app/"
+			"App": "App/"
 		}
 	}
 }
