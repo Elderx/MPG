@@ -6,11 +6,10 @@
 		"php": ">=5.4",
 		"ext-pdo": "*",
 		"bcosca/fatfree": "^3.6",
-		"symfony/dotenv": "^4.2",
 		"ikkez/f3-cortex": "^1.6",
 		"ikkez/f3-middleware": "^1.1",
 		"symfony/console": "^4.2",
-		"symfony/dotenv": "dev-master"
+		"vlucas/phpdotenv": "^3.3"
 	},
 	"autoload": {
 		"psr-0":

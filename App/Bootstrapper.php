@@ -30,8 +30,8 @@ class Bootstrapper
 
         // check if settings exists
         if (file_exists(".env")) {
-            $dotenv = new Dotenv();
-            $dotenv->load(APP_ROOT.'/.env');
+            $dotenv = new \chillerlan\DotEnv\DotEnv(APP_ROOT);
+            $dotenv->load();
             $this->connectDb($f3);
         } else {
             // enter setup mode
