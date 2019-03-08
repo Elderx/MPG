@@ -11,7 +11,7 @@ namespace App\Cli;
 
 use DB\SQL;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Dotenv\Dotenv;
+use Dotenv\Dotenv;
 
 abstract class DbCommand extends Command
 {
@@ -24,8 +24,8 @@ abstract class DbCommand extends Command
         parent::__construct($name);
         $f3 = \Base::instance();
 
-        $dotenv = new Dotenv();
-        $dotenv->load(APP_ROOT.'/../.env');
+        $dotenv = Dotenv::create(APP_ROOT);
+        $dotenv->load();
         $this->connectDb($f3);
     }
 
