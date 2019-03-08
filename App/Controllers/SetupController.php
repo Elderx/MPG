@@ -134,7 +134,7 @@ class SetupController extends Controller
         $user->save();
 
         // end setup
-        $f3->set("SESSION.setup", false);
+        unlink(APP_ROOT."/tmp/.setup");
 
         $this->redirect("/");
     }

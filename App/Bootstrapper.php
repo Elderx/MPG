@@ -9,7 +9,6 @@
 namespace App;
 
 use App\Controllers\ErrorController;
-
 use DB\SQL;
 use Dotenv\Dotenv;
 use Middleware;
@@ -37,10 +36,10 @@ class Bootstrapper
             $this->connectDb($f3);
         } else {
             // enter setup mode
-            $f3->set("SESSION.setup", true);
+            touch(APP_ROOT."/tmp/.setup");
         }
 
-        if ($f3->get("SESSION.setup") === true) {
+        if (file_exists(APP_ROOT."/tmp/.setup")) {
             Router::Setup($f3);
         } else {
             Router::Routes($f3);
