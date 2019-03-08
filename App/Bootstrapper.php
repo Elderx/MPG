@@ -9,9 +9,11 @@
 namespace App;
 
 use App\Controllers\ErrorController;
+
 use DB\SQL;
+use Dotenv\Dotenv;
 use Middleware;
-use Symfony\Component\Dotenv\Dotenv;
+
 
 class Bootstrapper
 {
@@ -30,7 +32,7 @@ class Bootstrapper
 
         // check if settings exists
         if (file_exists(".env")) {
-            $dotenv = new \chillerlan\DotEnv\DotEnv(APP_ROOT);
+            $dotenv = Dotenv::create(APP_ROOT);
             $dotenv->load();
             $this->connectDb($f3);
         } else {
