@@ -13,6 +13,8 @@ use App\Cli\WipeDatabase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
+define("APP_ROOT", dirname(__DIR__));
+
 $cli = new Application("console", "0.0.1");
 $output = new ConsoleOutput();
 
