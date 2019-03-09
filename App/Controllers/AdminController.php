@@ -25,4 +25,13 @@ class AdminController extends Controller
         $this->view("admin/dashboard.htm");
     }
 
+    /**
+     * upload page
+     * @param \Base $f3
+     */
+    public function getUpload($f3)
+    {
+        $this->view("admin/upload.htm");
+    }
+
 }

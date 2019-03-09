@@ -1,0 +1,232 @@
+<h1>Upload to gallery</h1>
+<div class="ui basic segment" id="imageLayer">
+    <div class="header">Upload</div>
+    <div id="dropzone" class="scrolling content">
+        <div class="ui info message">Drop images to upload</div>
+        <div id="imageList" class="ui three stackable cards">
+
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui cancel button">Cancel</div>
+    </div>
+</div>
+<h1>thumb</h1>
+<canvas id="thumbnailCanvas"></canvas>
+<h1>preview</h1>
+<canvas id="previewCanvas"></canvas>
+<script src="www/js/filereader.js"></script>
+<script src="www/js/fabric.min.js"></script>
+<script>
+    /** Generate an uuid
+     * @url https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#2117523 **/
+    function uuidv4() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+
+    var images = {};
+
+    $(document).ready(function () {
+        var opts = {
+            dragClass: "active",
+            on: {
+                load: function (e, file) {
+                    // check file type
+                    var imageType = /image.(jpeg|png)/;
+                    if (!file.type.match(imageType)) {
+                        //  alert("File \"" + file.name + "\" is not a valid image file, only jpeg and png are supported");
+                        return false;
+                    }
+
+                    // check file size
+                    if (parseInt(file.size / 1024) > 2050) {
+                        alert("File \"" + file.name + "\" is too big. Max allowed size is 2 MB.");
+                        return false;
+                    }
+
+                    createBox(e, file);
+                },
+            }
+        };
+
+        FileReaderJS.setupDrop(document.getElementById('dropzone'), opts);
+        FileReaderJS.setupClipboard(document.body, opts);
+    });
+
+
+    function createBox(e, file) {
+        var uid = uuidv4();
+        var imgName = file.name;
+
+        var src = e.target.result;
+        var image = new Image();
+        image.src = src;
+
+        image.onload = function () {
+            if (image.width > image.height) {
+                var w = 1280;
+                var h = 720;
+            } else {
+                var w = 720;
+                var h = 1280;
+            }
+
+            /// resize and generate thumbnails
+
+            var previewCanvas = new fabric.StaticCanvas("previewCanvas", {width: w, height: h});
+            var thumbnailCanvas = new fabric.StaticCanvas("thumbnailCanvas", {width: w / 4, height: h / 4});
+            previewCanvas.backgroundImage = null;
+            thumbnailCanvas.backgroundImage = null;
+
+            fabric.Image.fromURL(src, function (previewImage) {
+                fabric.Image.fromURL(src, function (thumbnailImage) {
+
+                    var previewCanvasAspect = previewCanvas.width / previewCanvas.height;
+                    var imgAspect = previewImage.width / previewImage.height;
+                    var left, top, scaleFactor;
+
+                    if (previewCanvasAspect >= imgAspect) {
+                        scaleFactor = previewCanvas.width / previewImage.width;
+                        left = 0;
+                        top = -((previewImage.height * scaleFactor) - previewCanvas.height) / 2;
+                    } else {
+                        scaleFactor = previewCanvas.height / previewImage.height;
+                        top = 0;
+                        left = -((previewImage.width * scaleFactor) - previewCanvas.width) / 2;
+                    }
+
+                    previewImage.set({
+                        top: top,
+                        left: left,
+                        originX: 'left',
+                        originY: 'top',
+                        scaleX: scaleFactor,
+                        scaleY: scaleFactor
+                    });
+
+                    previewCanvas.add(previewImage);
+                    previewCanvas.renderAll();
+
+// thumbnail
+                    var thumbnailCanvasAspect = thumbnailCanvas.width / thumbnailCanvas.height;
+                    imgAspect = thumbnailImage.width / thumbnailImage.height;
+
+
+                    if (thumbnailCanvasAspect >= imgAspect) {
+                        scaleFactor = thumbnailCanvas.width / thumbnailImage.width;
+                        left = 0;
+                        top = -((thumbnailImage.height * scaleFactor) - thumbnailCanvas.height) / 2;
+                    } else {
+                        scaleFactor = thumbnailCanvas.height / thumbnailImage.height;
+                        top = 0;
+                        left = -((thumbnailImage.width * scaleFactor) - thumbnailCanvas.width) / 2;
+                    }
+
+                    thumbnailImage.set({
+                        top: top,
+                        left: left,
+                        originX: 'left',
+                        originY: 'top',
+                        scaleX: scaleFactor,
+                        scaleY: scaleFactor
+                    });
+
+                    thumbnailCanvas.add(thumbnailImage);
+                    thumbnailCanvas.renderAll();
+
+
+                    images[uid] = {data: src, crop: previewCanvas.toDataURL(), name: imgName, type: file.type};
+
+                    var template = ` <div class="ui card" id="${uid}">
+        <div class="image">
+            <img class="" src="${src}" alt="image">
+        </div>
+        <div class="content">
+            <div class="center aligned header">${imgName}</div>
+        </div>
+        <div class="extra content">
+            <div class="ui tiny basic button" onclick="upload('${uid}', 'original');">Upload</div>
+            <div class="ui tiny basic button" onclick="cancelUpload('${uid}');">Cancel</div>
+        </div>
+    </div>`;
+                    $("#imageList").append(template);
+                });
+            });
+
+
+        }
+    }
+
+
+    function upload(uid, type) {
+
+        if (images[uid] !== null) {
+            var busyTemplate = `<div class="card">
+                                    <div class="ui active dimmer">
+                                        <div class="ui text loader">Uploading</div>
+                                    </div>
+                            </div>`;
+
+            let filename = images[uid].name.replace(/\.[^/.]+$/, "");
+
+            switch (type) {
+                case "original":
+                    $("#" + uid).html(busyTemplate);
+                    socket.emit("edit.uploadImage", {
+                        bundleName: bundle,
+                        name: filename,
+                        imageData: images[uid].data,
+                        type: images[uid].type,
+                    });
+                    delete (images[uid]);
+                    break;
+                case "scale":
+                    $("#" + uid).html(busyTemplate);
+                    socket.emit("edit.uploadImage", {
+                        bundleName: bundle,
+                        name: filename + "_crop",
+                        imageData: images[uid].crop,
+                        type: "image/png",
+                    });
+                    delete (images[uid]);
+                    break;
+                case "createSlide":
+                    saveAsFullScreenImage(filename, images[uid].data);
+                    $("#" + uid).remove();
+                    delete (images[uid]);
+                    break;
+            }
+
+        }
+    }
+
+    function addImagesFromUploadQueue() {
+
+        for (var i in images) {
+            var uid = i;
+            var image = images[i];
+            var template = ` <div class="ui card" id="${uid}">
+        <div class="image">
+            <img class="" src="${image.data}" alt="image">
+        </div>
+        <div class="content">
+            <div class="center aligned header">${image.name}</div>
+        </div>
+        <div class="extra content">
+            <div class="ui tiny basic button" onclick="upload('${uid}', 'original');">Upload</div>
+            <div class="ui tiny basic button" onclick="cancelUpload('${uid}');">Cancel</div>
+        </div>
+    </div>`;
+            $("#imageList").append(template);
+        }
+    }
+
+    function cancelUpload(uid) {
+        delete images[uid];
+        $("#" + uid).remove();
+    }
+</script>

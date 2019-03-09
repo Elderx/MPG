@@ -26,7 +26,7 @@ class Router
 
         // admin
         $f3->route('GET /admin', "\App\Controllers\AdminController->getDashboard");
-        $f3->route('GET /admin/test', "\App\Controllers\AdminController->getDashboard");
+        $f3->route('GET /admin/upload', "\App\Controllers\AdminController->getUpload");
 
         // auth routes
         $f3->route('GET /auth/login', "\App\Controllers\AuthController->getLogin");
