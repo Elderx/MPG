@@ -2,7 +2,7 @@
 RewriteEngine On
 
 # change this to reflect your directory at apache
-RewriteBase /mpg/
+RewriteBase /
 
 RewriteCond %{REQUEST_URI} !/www/
 RewriteRule ^(.*)$ index.php?/$1 [L,QSA]
