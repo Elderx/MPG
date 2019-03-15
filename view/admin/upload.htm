@@ -3,10 +3,12 @@
     <div class="header">Upload</div>
     <div id="dropzone" class="scrolling content">
         <div class="ui info message">Drop images to upload</div>
+        <input class="ui button" type="file" id="file-input" name="file-input" multiple />
         <div id="imageList" class="ui three stackable cards">
 
         </div>
     </div>
+    <div class="ui basic segment"></div>
     <div class="actions">
         <div class="ui cancel button">Cancel</div>
     </div>
@@ -54,6 +56,7 @@
         };
 
         FileReaderJS.setupDrop(document.getElementById('dropzone'), opts);
+	FileReaderJS.setupInput(document.getElementById('file-input'), opts);
         FileReaderJS.setupClipboard(document.body, opts);
     });
 
