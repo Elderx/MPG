@@ -3,7 +3,7 @@
     <div class="header">Upload</div>
     <div id="dropzone" class="scrolling content">
         <div class="ui info message">Drop images to upload</div>
-        <input class="ui button" type="file" id="file-input" name="file-input" multiple />
+        <input class="ui button" type="file" id="input" multiple onchange="handleFiles(this.files)">
         <div id="imageList" class="ui three stackable cards">
 
         </div>
@@ -17,11 +17,91 @@
 <canvas id="thumbnailCanvas"></canvas>
 <h1>preview</h1>
 <canvas id="previewCanvas"></canvas>
-<script src="www/js/filereader.js"></script>
+<div id="preview"></div>
+<!--<script src="www/js/filereader.js"></script>-->
 <script src="www/js/fabric.min.js"></script>
 <script>
+
+
+/** upload test **/
+
+const inputElement = document.getElementById("input");
+inputElement.addEventListener("change", handleFiles, false);
+fileList = null;
+let kuvat = [];
+console.log("1. array luotu");
+function handleFiles(files) {
+    console.log("ENTER handleFiles for loop");
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    
+    if (!file.type.startsWith('image/')){ continue }
+
+    console.log("2. tarkistettu että image tyyppiä ");
+    
+    kuvat.push(file);
+
+    console.log("3. lisätty kuvat arrayhyn");
+
+    /**
+    const img = document.createElement("img");
+    img.classList.add("obj");
+    img.file = file;
+    preview.appendChild(img); // Assuming that "preview" is the div output where the content will be displayed.
+    
+    const reader = new FileReader();
+    reader.onload = (function(aImg) { return function(e) { aImg.src = e.target.result; }; })(file);
+    reader.readAsDataURL(file);
+    **/
+
+    /*
+    const reader = new FileReader();
+    console.log("4. luotu FileReader");
+    reader.onload = function(e) {
+    // The file's text will be printed here
+            console.log(e.target.result)
+        };
+    //reader.onload = (function(aImg) { return function(e) { aImg.src = e.target.result; }; })(file);
+    reader.readAsDataURL(file);
+    console.log("5. luettu filut levyltä");
+    */
+
+    new FileUpload(file);
+
+  }
+}
+
+function FileUpload(file) {
+    console.log("FileUpload function start");
+  const reader = new FileReader();  
+  //this.ctrl = createThrobber(img);
+  const xhr = new XMLHttpRequest();
+  this.xhr = xhr;
+  
+  const self = this;
+
+  xhr.open("POST", "http://demos.hacks.mozilla.org/paul/demos/resources/webservices/devnull.php");
+  xhr.overrideMimeType('text/plain; charset=x-user-defined-binary');
+  reader.onload = function(evt) {
+    console.log("reader.onload alku");
+    xhr.send(evt.target.result);
+    //console.log("sent: " + evt.target.result);
+  };
+  console.log("filu" + file);
+  reader.readAsDataURL(file);
+}
+
+
+/** upload test **/
+
+
+
+
     /** Generate an uuid
      * @url https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#2117523 **/
+
+    /** TMP RM
+
     function uuidv4() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
             let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
@@ -232,4 +312,6 @@
         delete images[uid];
         $("#" + uid).remove();
     }
+
+    **/
 </script>
